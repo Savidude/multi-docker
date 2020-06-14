@@ -1,0 +1,22 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build savidude/react-test -f client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true savidude/react-test npm test
+
+after_success:
+    - docker build -t savidude/multi-client ./client
+    - docker build -t savidude/multi-nginx ./nginx
+    - docker build -t savidude/multi-server ./server
+    - docker build -t savidude/multi-worker ./worker
+    # Log into the Docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    # Push the images to DockerHub
+    - docker push savidude/multi-client
+    - docker push savidude/multi-nginx
+    - docker push savidude/multi-server
+    - docker push savidude/multi-worker
