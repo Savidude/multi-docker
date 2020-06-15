@@ -1,0 +1,36 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "client",
+            "image": "savidude/multi-client",
+            "hostname": "client",
+            "essental": false
+        },
+        {
+            "name": "server",
+            "image": "savidude/multi-server",
+            "hostname": "api",
+            "essental": false
+        },
+        {
+            "name": "worker",
+            "image": "savidude/multi-worker",
+            "hostname": "worker",
+            "essental": false
+        },
+        {
+            "name": "nginx",
+            "image": "savidude/multi-nginx",
+            "hostname": "nginx",
+            "essental": true,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": ["client", "server"]
+        }
+    ]
+}
